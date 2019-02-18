@@ -4,6 +4,7 @@ const mongoose =require('mongoose');
 const passport = require('passport');
 
 const validateProfileInput = require('../../validation/profile');
+const validateExperienceInput = require('../../validation/experience');
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
 
@@ -117,6 +118,60 @@ router.post(
           });
         }
       });
+    }
+  );
+
+
+  router.post(
+    '/product',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
+      const { errors, isValid } = validateExperienceInput(req.body);
+  
+      // Check Validation
+      if (!isValid) {
+        // Return any errors with 400 status
+        return res.status(400).json(errors);
+      }
+  
+      Profile.findOne({ user: req.user.id }).then(profile => {
+        const newExp = {
+
+          name: req.body.name,
+          description: req.body.description,
+          quantity: req.body.quantity,
+          basePrice: req.body.basePrice,
+          taxRate: req.body.taxRate,
+          salePrice: req.body.salePrice
+        };
+  
+        
+        console.log(profile);
+        // profile.products.unshift(newExp);
+  
+        // profile.save().then(profile => res.json(profile));
+      });
+    }
+  );
+
+  router.delete(
+    '/product/:exp_id',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
+      Profile.findOne({ user: req.user.id })
+        .then(profile => {
+          // Get remove index
+          const removeIndex = profile.products
+            .map(item => item.id)
+            .indexOf(req.params.exp_id);
+  
+          // Splice out of array
+          profile.products.splice(removeIndex, 1);
+  
+          // Save
+          profile.save().then(profile => res.json(profile));
+        })
+        .catch(err => res.status(404).json(err));
     }
   );
 

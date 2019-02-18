@@ -10,7 +10,35 @@ const ProfileSchema = new Schema({
       type: String,
       required: true,
       max: 40
-    }
+    },
+    products: [
+        {
+            name: {
+                type: String,
+                required: true
+            },
+            description: {
+                type: String,
+                required: true
+            },
+            quantity: {
+                type: Number
+            },
+            basePrice: {
+                type: Number
+               
+            },
+            taxPrice: {
+                type: Number
+                
+            },
+            salePrice: {
+                type: Number
+            
+            }
+            
+        }
+    ]
 });
 
 module.exports = Profile = mongoose.model('profile', ProfileSchema);

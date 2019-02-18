@@ -30,3 +30,15 @@ export const clearCurrentProfile = () => {
       type: CLEAR_CURRENT_PROFILE
     };
   };
+
+  export const addProduct = (productData, history) => dispatch => {
+    axios
+      .post('/api/profile/product', productData)
+      .then(res => history.push('/dashboard'))
+      .catch(err =>
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        })
+      );
+  }; 
